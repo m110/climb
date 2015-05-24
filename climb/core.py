@@ -11,7 +11,7 @@ class Climb(object):
     _prompt = "[{path}]> "
     _running = False
 
-    def __init__(self, name, args, commands, completer, prompt=None):
+    def __init__(self, name, args, commands, completer, prompt=None, skip_delims=None):
         self._name = name
         load_config(name)
 
@@ -26,8 +26,16 @@ class Climb(object):
         if prompt is not None:
             self._prompt = prompt
 
+        self._skip_delims = skip_delims
+
     def run(self):
         """Loops and executes commands in interactive mode."""
+        if self._skip_delims:
+            delims = readline.get_completer_delims()
+            for delim in self._skip_delims:
+                delims = delims.replace(delim, '')
+            readline.set_completer_delims(delims)
+
         readline.parse_and_bind("tab: complete")
         readline.set_completer(self._completer.complete)
 
