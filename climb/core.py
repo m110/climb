@@ -3,7 +3,7 @@ import shlex
 import readline
 import warnings
 
-from climb.config import load_config
+from climb.config import load_config, config
 from climb.exceptions import CLIException
 from climb.paths import ROOT_PATH
 
@@ -16,11 +16,11 @@ class Climb(object):
 
     def __init__(self, name, args, commands, completer, prompt=None):
         self._name = name
-        self._config = load_config(name)
+        load_config(name)
 
         self._current_path = ROOT_PATH
-        self._verbose = self._config.getboolean(name, 'verbose')
-        self._history_file = os.path.expanduser(self._config[name].get('history', ''))
+        self._verbose = config.getboolean(name, 'verbose')
+        self._history_file = os.path.expanduser(config[name].get('history', ''))
 
         self._args = args(self)
         self._commands = commands(self)
@@ -87,10 +87,6 @@ class Climb(object):
     @property
     def args(self):
         return self._args
-
-    @property
-    def config(self):
-        return self._config
 
     @property
     def commands(self):

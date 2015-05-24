@@ -9,9 +9,11 @@ DEFAULT_CONFIG_PATHS = [
     '/etc/{name}/{name}.conf',
 ]
 
+config = configparser.ConfigParser()
+
 
 def load_config(name):
-    config = configparser.ConfigParser()
+    config.clear()
 
     paths = [path.format(name=name) for path in DEFAULT_CONFIG_PATHS]
     for config_path in paths:
@@ -21,5 +23,3 @@ def load_config(name):
             break
     else:
         raise ConfigNotFound("Could not find {name}.conf".format(name))
-
-    return config
