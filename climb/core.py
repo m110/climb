@@ -1,13 +1,10 @@
 import os
 import shlex
 import readline
-import warnings
 
 from climb.config import load_config, config
 from climb.exceptions import CLIException
 from climb.paths import ROOT_PATH
-
-warnings.simplefilter("ignore")
 
 
 class Climb(object):
