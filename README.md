@@ -1,6 +1,12 @@
 # climb
 Python library for interactive command line applications.
 
+## Featuring:
+
+* Interactive and batch mode.
+* Tab-completions out of the box.
+* Ready to handle directory paths.
+
 ## Installation
 
 ```
