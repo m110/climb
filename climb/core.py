@@ -59,6 +59,7 @@ class Climb(object):
                     print(exc)
                 except (KeyboardInterrupt, EOFError):
                     self._running = False
+                    print()
         finally:
             if self._history_file:
                 readline.write_history_file(self._history_file)
