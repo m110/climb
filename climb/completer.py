@@ -1,30 +1,66 @@
+import os
+import glob
 import readline
+
+
+def current_argument(buffer, begin, end):
+    trimmed_buffer = buffer[:end]
+    position = ' '.join(trimmed_buffer.split()).count(' ')
+    if trimmed_buffer.endswith(' '):
+        position += 1
+
+    space_position = buffer.rfind(' ', 0, begin)
+    argument = buffer[space_position+1:end]
+
+    return position, argument
 
 
 class Completer(object):
 
     def __init__(self, cli):
         self._cli = cli
-        self._completions = {}
+        self._commands = [command.name for command in self._cli.args.commands]
 
     def complete(self, text, state):
         buffer = readline.get_line_buffer()
+        begin = readline.get_begidx()
+        end = readline.get_endidx()
 
-        if ' ' in buffer.lstrip():
-            command, kwargs = self._cli.parse(*buffer.split())
-
-            method = self._completions.get(command, self._default_completer())
-            completions = method(**kwargs)
+        position, argument = current_argument(buffer, begin, end)
+        if position > 0:
+            command = buffer.split()[0]
+            completer_name = self._cli.commands.get_completer(command, position)
+            completer = getattr(self, completer_name)
         else:
-            completions = [command.name for command in self._cli.args.commands]
+            completer = self.commands
 
-        completions = [c for c in completions
-                       if c.startswith(text)]
+        completions = completer(argument, text)
 
         if state < len(completions):
             return completions[state]
         else:
             return None
 
-    def _default_completer(self):
-        raise NotImplemented("Default completer not set")
+    def commands(self, arg, text):
+        commands = [c for c in self._commands
+                    if c.startswith(arg)]
+
+        if len(commands) == 1:
+            return ["{} ".format(commands[0])]
+
+        return commands
+
+    def system_path(self, arg, text):
+        glob_path = "{}*".format(os.path.expanduser(arg))
+
+        paths = [path for path in glob.iglob(glob_path)
+                 if path.startswith(arg)]
+
+        if len(paths) == 1:
+            child = paths[0].split('/')[-1]
+            if os.path.isdir(paths[0]):
+                return ["{}/".format(child)]
+            else:
+                return ["{} ".format(child)]
+
+        return [path.split('/')[-1] for path in paths]

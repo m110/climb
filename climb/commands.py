@@ -6,6 +6,13 @@ def command(function):
     return function
 
 
+def completers(*compl):
+    def wrapper(function):
+        function.completers = compl
+        return function
+    return wrapper
+
+
 class Commands(object):
 
     def __init__(self, cli):
@@ -19,6 +26,13 @@ class Commands(object):
                 return method(*args, **kwargs)
 
         raise UnknownCommand("There is no action for command {}".format(command))
+
+    def get_completer(self, name, position):
+        if hasattr(self, name):
+            method = getattr(self, name)
+            return getattr(method, 'completers', [])[position-1]
+
+        raise UnknownCommand("No completer for command {}".format(command))
 
     @command
     def help(self, parser, all_commands, subject):
