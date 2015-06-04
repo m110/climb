@@ -28,7 +28,7 @@ class Completer(object):
 
         position, argument = current_argument(buffer, begin, end)
         if position > 0:
-            command = buffer.split()[0]
+            command, _ = self._cli.parse(*buffer.split())
             completer_name = self._cli.commands.get_completer(command, position)
             completer = getattr(self, completer_name)
         else:
