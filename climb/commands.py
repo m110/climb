@@ -30,7 +30,14 @@ class Commands(object):
     def get_completer(self, name, position):
         if hasattr(self, name):
             method = getattr(self, name)
-            return getattr(method, 'completers', [])[position-1]
+            compl = getattr(method, 'completers', [])
+
+            if compl:
+                pos = position-1
+                if len(compl) > pos:
+                    return compl[pos]
+                else:
+                    return compl[0]
 
         raise UnknownCommand("No completer for command {}".format(command))
 

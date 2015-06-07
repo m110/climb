@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(name='climb',
-      version='0.3.0',
+      version='0.3.1',
       description='Library for interactive command line applications.',
       author='Milosz Smolka',
       author_email='m110@m110.pl',
