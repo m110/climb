@@ -1,6 +1,7 @@
 import os
 import shlex
 import readline
+import traceback
 
 from climb.config import load_config, config
 from climb.exceptions import CLIException
@@ -60,6 +61,11 @@ class Climb(object):
                 except (KeyboardInterrupt, EOFError):
                     self._running = False
                     print()
+                except Exception as exc:
+                    if self._verbose:
+                        traceback.print_exc()
+                    else:
+                        print(exc)
         finally:
             if self._history_file:
                 readline.write_history_file(self._history_file)
