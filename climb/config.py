@@ -20,7 +20,7 @@ def load_config(name):
         if _read_config(config_path):
             break
     else:
-        raise ConfigNotFound("Could not find {name}.conf".format(name))
+        raise ConfigNotFound("Could not find {}.conf".format(name))
 
 
 def load_config_file(path):
